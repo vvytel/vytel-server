@@ -819,9 +819,19 @@ def ended(ws):
 
 
 def heartbeat():
-    """Every few seconds: ping everyone, drop the silent, expire held rooms and slots, log a summary now and then."""
+    """Every few seconds: ping everyone, drop the silent, expire held rooms and slots, log a summary now and then.
+    (One bad pass must never end this thread: without it nobody is pinged, silent links are never dropped and held
+    rooms never expire - the "rooms 1, clients 0" stale room after a co-op test.)"""
     last_stats = time.monotonic()
     while not SHUTTING_DOWN.wait(min(5, Cfg.ping_interval)):
+        try:
+            last_stats = heartbeat_pass(last_stats)
+        except Exception:
+            log.exception('heartbeat pass failed (continuing)')
+
+
+def heartbeat_pass(last_stats):
+    if True:
         now = time.monotonic()
         for c in list(clients):
             if not c.alive:
@@ -851,6 +861,7 @@ def heartbeat():
             last_stats = now
             log.info('stats: %d rooms, %d connections, %.1f MB out / %.1f MB in since start',
                      len(rooms), len(clients), Stats.bytes_out / 1e6, Stats.bytes_in / 1e6)
+    return last_stats
 
 
 # ------------------------------------------------------------------------------------------------ remote version.json
