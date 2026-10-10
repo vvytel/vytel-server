@@ -1,0 +1,17 @@
+# Render Blueprint: New + > Blueprint > pick this repository. Creates one FREE web service.
+services:
+  - type: web
+    name: vytel-server              # becomes https://vytel-server.onrender.com (or with a suffix if taken)
+    runtime: python                 # plain Python, nothing to install (no requirements.txt needed)
+    plan: free
+    region: ohio                    # closest to Ontario/Quebec; others: oregon, virginia, frankfurt, singapore
+    buildCommand: python --version
+    startCommand: python server_v2.py
+    healthCheckPath: /healthz
+    envVars:
+      - key: SERVE_WEB
+        value: "0"
+      # Where the launcher's version.json lives: your GitHub Release (Render asks you for it when you create the
+      # service), e.g. https://github.com/YOUR-NAME/vytel-server/releases/latest/download/version.json
+      - key: VERSION_URL
+        sync: false

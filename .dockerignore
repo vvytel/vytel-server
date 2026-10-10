@@ -1,0 +1,10 @@
+# Keep the image tiny: no game builds, no zips, no caches.
+**/*.zip
+**/*.7z
+**/*.exe
+builds/*.zip
+**/__pycache__
+**/*.pyc
+.git
+*.md
+!README.md

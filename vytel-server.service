@@ -1,0 +1,21 @@
+# systemd unit for an always-on Linux VM (Oracle Cloud Always Free, Google e2-micro, any VPS).
+#   sudo cp vytel-server.service /etc/systemd/system/ && sudo systemctl enable --now vytel-server
+# Expects server_v2.py in /opt/vytel (owned by the "ubuntu" user). Open TCP port 8000 in the VM's firewall/security list.
+[Unit]
+Description=Vytel's Academy Chronicles game server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/opt/vytel
+Environment=PORT=8000 SERVE_WEB=0
+# Environment=VERSION_URL=https://github.com/YOUR-NAME/vytel-server/releases/latest/download/version.json
+ExecStart=/usr/bin/python3 /opt/vytel/server_v2.py
+Restart=always
+RestartSec=3
+KillSignal=SIGTERM
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

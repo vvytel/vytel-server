@@ -1,0 +1,4 @@
+*.zip
+*.exe
+__pycache__/
+*.pyc
